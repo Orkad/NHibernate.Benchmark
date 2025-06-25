@@ -1,26 +1,24 @@
 ﻿using BenchmarkDotNet.Attributes;
 using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using NHibernate.Benchmark.Helpers;
 using NHibernate.Benchmark.Mappings.ByCode;
 using NHibernate.Benchmark.Mappings.Fluent;
+using NHibernate.Benchmark.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
 
 namespace NHibernate.Benchmark.Benchmarks;
 
-[SimpleJob(iterationCount: 3)]
+
+[ShortRunJob]
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
-    [Params(MappingStrategy.Xml, MappingStrategy.ByCode, MappingStrategy.Fluent)]
-    public MappingStrategy Strategy { get; set; }
-
-    [Benchmark]
-    public ISessionFactory CreateSessionFactory()
+    private static Configuration CreateBaseConfiguration()
     {
         var cfg = new Configuration();
-
         cfg.DataBaseIntegration(db =>
         {
             db.Dialect<Dialect.SQLiteDialect>();
@@ -29,28 +27,54 @@ public class InitializationBenchmark
             db.ConnectionReleaseMode = ConnectionReleaseMode.OnClose;
             db.LogSqlInConsole = false;
         });
+        return cfg;
+    }
 
-        switch (Strategy)
-        {
-            case MappingStrategy.Xml:
-                cfg.AddFile("Mappings/Xml/Person.hbm.xml");
-                break;
+    [Benchmark]
+    public ISessionFactory FluentInitialization()
+    {
+        var cfg = CreateBaseConfiguration();
+        return Fluently.Configure(cfg)
+            .Mappings(m => m.FluentMappings.Add<PersonMap>())
+            .BuildSessionFactory();
+    }
 
-            case MappingStrategy.ByCode:
-                var mapper = new ModelMapper();
-                mapper.AddMapping<PersonMapping>(); // suffix Mapping
-                cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
-                break;
+    [Benchmark]
+    public ISessionFactory FluentInitializationFromAssembly()
+    {
+        var cfg = CreateBaseConfiguration();
 
-            case MappingStrategy.Fluent:
-                return Fluently.Configure(cfg)
-                    .Mappings(m => m.FluentMappings.Add<PersonMap>()) // suffix Map
-                    .ExposeConfiguration(c => new SchemaExport(c).Create(false, true))
-                    .BuildSessionFactory();
-        }
+        return Fluently.Configure(cfg)
+            .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PersonMap>())
+            .BuildSessionFactory();
+    }
 
-        // Pour XML et ByCode : création manuelle du schéma
-        new SchemaExport(cfg).Create(false, true);
+    [Benchmark]
+    public ISessionFactory XmlInitialization()
+    {
+        var cfg = CreateBaseConfiguration();
+
+        cfg.AddFile("Mappings/Xml/Person.hbm.xml");
+        return cfg.BuildSessionFactory();
+    }
+
+    [Benchmark]
+    public ISessionFactory XmlInitializationFromAssembly()
+    {
+        var cfg = CreateBaseConfiguration();
+
+        cfg.AddAssembly(typeof(Person).Assembly);
+        return cfg.BuildSessionFactory();
+    }
+
+    [Benchmark]
+    public ISessionFactory ByCodeInitialization()
+    {
+        var cfg = CreateBaseConfiguration();
+
+        var mapper = new ModelMapper();
+        mapper.AddMapping<PersonMapping>();
+        cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
         return cfg.BuildSessionFactory();
     }
 }
