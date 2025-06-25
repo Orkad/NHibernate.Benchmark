@@ -11,6 +11,11 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
     <PackageReference Include="FluentNHibernate" Version="3.4.1" />
     <PackageReference Include="NHibernate" Version="5.5.2" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Update="Mappings/Xml/Person.hbm.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
