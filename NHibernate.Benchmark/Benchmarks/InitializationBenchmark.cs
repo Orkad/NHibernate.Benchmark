@@ -8,6 +8,7 @@ using NHibernate.Benchmark.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using System.Reflection;
 
 namespace NHibernate.Benchmark.Benchmarks;
 
@@ -16,6 +17,7 @@ namespace NHibernate.Benchmark.Benchmarks;
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
+    private static readonly Assembly assembly = typeof(Person).Assembly;
     private static Configuration CreateBaseConfiguration()
     {
         var cfg = new Configuration();
@@ -55,7 +57,7 @@ public class InitializationBenchmark
         var cfg = CreateBaseConfiguration();
 
         var sf = Fluently.Configure(cfg)
-            .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PersonMap>())
+            .Mappings(m => m.FluentMappings.AddFromAssembly(assembly))
             .BuildSessionFactory();
         return UseConfiguration(cfg);
 
@@ -76,7 +78,7 @@ public class InitializationBenchmark
     {
         var cfg = CreateBaseConfiguration();
 
-        cfg.AddAssembly(typeof(Person).Assembly);
+        cfg.AddAssembly(assembly);
         return UseConfiguration(cfg);
 
     }
@@ -88,6 +90,17 @@ public class InitializationBenchmark
 
         var mapper = new ModelMapper();
         mapper.AddMapping<PersonMapping>();
+        cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+        return UseConfiguration(cfg);
+    }
+
+    [Benchmark]
+    public ISessionFactory ByCodeInitializationFromAssembly()
+    {
+        var cfg = CreateBaseConfiguration();
+
+        var mapper = new ModelMapper();
+        mapper.AddMappings(assembly.GetExportedTypes());
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
         return UseConfiguration(cfg);
     }
