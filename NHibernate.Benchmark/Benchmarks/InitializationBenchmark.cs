@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Engines;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using NHibernate.Benchmark.Helpers;
 using NHibernate.Benchmark.Mappings.ByCode;
 using NHibernate.Benchmark.Mappings.Fluent;
 using NHibernate.Benchmark.Models;
@@ -31,23 +30,35 @@ public class InitializationBenchmark
         return cfg;
     }
 
+    private static ISessionFactory UseConfiguration(Configuration configuration)
+    {
+        var sf = configuration.BuildSessionFactory();
+        using var session = sf.OpenSession();
+        new SchemaExport(configuration).Create(false, true, session.Connection);
+        _ = session.Get<Person>(1);
+        return sf;
+    }
+
     [Benchmark]
     public ISessionFactory FluentInitialization()
     {
         var cfg = CreateBaseConfiguration();
-        return Fluently.Configure(cfg)
+        cfg = Fluently.Configure(cfg)
             .Mappings(m => m.FluentMappings.Add<PersonMap>())
-            .BuildSessionFactory();
+            .BuildConfiguration();
+        return UseConfiguration(cfg);
     }
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public ISessionFactory FluentInitializationFromAssembly()
     {
         var cfg = CreateBaseConfiguration();
 
-        return Fluently.Configure(cfg)
+        var sf = Fluently.Configure(cfg)
             .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PersonMap>())
             .BuildSessionFactory();
+        return UseConfiguration(cfg);
+
     }
 
     [Benchmark]
@@ -56,7 +67,8 @@ public class InitializationBenchmark
         var cfg = CreateBaseConfiguration();
 
         cfg.AddFile("Mappings/Xml/Person.hbm.xml");
-        return cfg.BuildSessionFactory();
+        return UseConfiguration(cfg);
+
     }
 
     [Benchmark]
@@ -65,7 +77,8 @@ public class InitializationBenchmark
         var cfg = CreateBaseConfiguration();
 
         cfg.AddAssembly(typeof(Person).Assembly);
-        return cfg.BuildSessionFactory();
+        return UseConfiguration(cfg);
+
     }
 
     [Benchmark]
@@ -76,6 +89,6 @@ public class InitializationBenchmark
         var mapper = new ModelMapper();
         mapper.AddMapping<PersonMapping>();
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
-        return cfg.BuildSessionFactory();
+        return UseConfiguration(cfg);
     }
 }
