@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Mapping;
-using NHibernate.Benchmark.Models;
+using NHibernate.Benchmark.AuthorWork.Models;
 
-namespace NHibernate.Benchmark.Mappings.Fluent;
+namespace NHibernate.Benchmark.AuthorWork.Mappings.Fluent;
 
 public class WorkMap : ClassMap<Work>
 {

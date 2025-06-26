@@ -1,5 +1,3 @@
 ﻿using BenchmarkDotNet.Running;
-using NHibernate.Benchmark.Benchmarks;
 
-BenchmarkRunner.Run<InitializationBenchmark>();
-BenchmarkRunner.Run<TrackingBenchmark>();
+BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);

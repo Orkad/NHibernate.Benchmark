@@ -1,8 +1,8 @@
-﻿using NHibernate.Benchmark.Models;
+﻿using NHibernate.Benchmark.AuthorWork.Models;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace NHibernate.Benchmark.Mappings.ByCode;
+namespace NHibernate.Benchmark.AuthorWork.Mappings.ByCode;
 
 public class WorkMapping : ClassMapping<Work>
 {

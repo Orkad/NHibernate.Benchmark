@@ -3,9 +3,9 @@ using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Jobs;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-using NHibernate.Benchmark.Mappings.ByCode;
-using NHibernate.Benchmark.Mappings.Fluent;
-using NHibernate.Benchmark.Models;
+using NHibernate.Benchmark.AuthorWork.Mappings.ByCode;
+using NHibernate.Benchmark.AuthorWork.Mappings.Fluent;
+using NHibernate.Benchmark.AuthorWork.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
@@ -13,7 +13,7 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 
-namespace NHibernate.Benchmark.Benchmarks;
+namespace NHibernate.Benchmark;
 
 [SimpleJob(
     RunStrategy.ColdStart, runtimeMoniker:

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NHibernate.Benchmark.Models;
+namespace NHibernate.Benchmark.AuthorWork.Models;
 public class Author
 {
     public virtual int Id { get; set; }

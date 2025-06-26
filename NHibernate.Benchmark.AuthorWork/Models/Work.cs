@@ -1,4 +1,4 @@
-﻿namespace NHibernate.Benchmark.Models;
+﻿namespace NHibernate.Benchmark.AuthorWork.Models;
 
 public class Work
 {
