@@ -14,8 +14,18 @@ using System.Reflection;
 namespace NHibernate.Benchmark.Benchmarks;
 
 
-[SimpleJob(RunStrategy.ColdStart, runtimeMoniker: RuntimeMoniker.Net48, launchCount: 3, iterationCount: 1)]
-[SimpleJob(RunStrategy.ColdStart, runtimeMoniker: RuntimeMoniker.Net80, launchCount: 3, iterationCount: 1)]
+[SimpleJob(
+    RunStrategy.ColdStart, runtimeMoniker: 
+    RuntimeMoniker.Net48, 
+    launchCount: 10, 
+    iterationCount: 1, 
+    invocationCount: 1)]
+[SimpleJob(
+    RunStrategy.ColdStart, 
+    runtimeMoniker: RuntimeMoniker.Net80, 
+    launchCount: 10, 
+    iterationCount: 1,
+    invocationCount: 1)]
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
