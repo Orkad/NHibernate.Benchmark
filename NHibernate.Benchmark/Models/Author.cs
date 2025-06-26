@@ -10,4 +10,5 @@ public class Author
     public virtual int Id { get; set; }
     public virtual string Alias { get; set; }
     public virtual Person Person { get; set; }
+    public virtual ISet<Work> Works { get; set; }
 }

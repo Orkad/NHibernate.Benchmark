@@ -53,6 +53,9 @@ public class InitializationBenchmark
             {
                 m.FluentMappings.Add<PersonMap>();
                 m.FluentMappings.Add<AuthorMap>();
+                m.FluentMappings.Add<WorkMap>();
+                m.FluentMappings.Add<BookMap>();
+                m.FluentMappings.Add<SongMap>();
             })
             .BuildConfiguration();
         return UseConfiguration(cfg);
@@ -73,6 +76,7 @@ public class InitializationBenchmark
     {
         cfg.AddFile("Mappings/Xml/Person.hbm.xml");
         cfg.AddFile("Mappings/Xml/Author.hbm.xml");
+        cfg.AddFile("Mappings/Xml/Work.hbm.xml");
         return UseConfiguration(cfg);
 
     }
@@ -91,6 +95,9 @@ public class InitializationBenchmark
         var mapper = new ModelMapper();
         mapper.AddMapping<PersonMapping>();
         mapper.AddMapping<AuthorMapping>();
+        mapper.AddMapping<WorkMapping>();
+        mapper.AddMapping<BookMapping>();
+        mapper.AddMapping<SongMapping>();
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
         return UseConfiguration(cfg);
     }

@@ -20,7 +20,16 @@ public class AuthorMapping : ClassMapping<Author>
 
         OneToOne(x => x.Person, m =>
         {
-            m.Constrained(true); // correspond à <one-to-one constrained="true"/>
+            m.Constrained(true);
         });
+
+        Set(x => x.Works, m =>
+        {
+            m.Table("AuthorWork");
+            m.Key(k => k.Column("AuthorId"));
+            m.Inverse(true);
+            m.Lazy(CollectionLazy.Lazy);
+        },
+        r => r.ManyToMany(m => m.Column("WorkId")));
     }
 }

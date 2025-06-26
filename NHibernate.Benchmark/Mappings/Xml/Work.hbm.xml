@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="NHibernate.Benchmark" namespace="NHibernate.Benchmark.Models">
+  <class name="Work" table="Work" discriminator-value="W">
+
+    <id name="Id" column="Id" generator="native" />
+
+    <discriminator column="Type" type="character"/>
+
+    <property name="Title"/>
+    <set name="Authors" table="AuthorWork" lazy="true">
+      <key>
+        <column name="WorkId" not-null="true"/>
+      </key>
+      <many-to-many class="Author">
+        <column name="AuthorId" not-null="true"/>
+      </many-to-many>
+    </set>
+
+    <subclass name="Book" discriminator-value="B">
+      <property name="Text" column="Text" />
+    </subclass>
+
+    <subclass name="Song" discriminator-value="S">
+      <property name="Tempo" column="Tempo" />
+      <property name="Genre" column="Genre" />
+    </subclass>
+
+  </class>
+</hibernate-mapping>

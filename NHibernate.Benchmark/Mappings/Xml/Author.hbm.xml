@@ -7,5 +7,9 @@
     </id>
     <property name="Alias" column="Alias" />
     <one-to-one name="Person" constrained="true"/>
+    <set name="Works" table="AuthorWork" inverse="true" lazy="true">
+      <key column="AuthorId"/>
+      <many-to-many class="Work" column="WorkId"/>
+    </set>
   </class>
 </hibernate-mapping>
