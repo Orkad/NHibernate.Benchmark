@@ -2,3 +2,4 @@
 using NHibernate.Benchmark.Benchmarks;
 
 BenchmarkRunner.Run<InitializationBenchmark>();
+BenchmarkRunner.Run<TrackingBenchmark>();

@@ -9,26 +9,28 @@ using NHibernate.Benchmark.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using System.Data;
+using System.Data.Common;
 using System.Reflection;
 
 namespace NHibernate.Benchmark.Benchmarks;
 
 [SimpleJob(
-    RunStrategy.ColdStart, runtimeMoniker: 
-    RuntimeMoniker.Net48, 
-    launchCount: 30, 
-    iterationCount: 1, 
-    invocationCount: 1)]
-[SimpleJob(
-    RunStrategy.ColdStart, 
-    runtimeMoniker: RuntimeMoniker.Net80, 
-    launchCount: 30, 
+    RunStrategy.ColdStart, runtimeMoniker:
+    RuntimeMoniker.Net48,
+    launchCount: 30,
     iterationCount: 1,
     invocationCount: 1)]
 [SimpleJob(
-    RunStrategy.ColdStart, 
-    runtimeMoniker: RuntimeMoniker.Net90, 
-    launchCount: 30, 
+    RunStrategy.ColdStart,
+    runtimeMoniker: RuntimeMoniker.Net80,
+    launchCount: 30,
+    iterationCount: 1,
+    invocationCount: 1)]
+[SimpleJob(
+    RunStrategy.ColdStart,
+    runtimeMoniker: RuntimeMoniker.Net90,
+    launchCount: 30,
     iterationCount: 1,
     invocationCount: 1)]
 [MemoryDiagnoser]
