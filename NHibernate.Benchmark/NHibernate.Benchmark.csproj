@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Mappings\Xml\Person.hbm.xml" />
+    <None Remove="Mappings\Xml\*.hbm.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Mappings\Xml\Person.hbm.xml">
+    <EmbeddedResource Include="Mappings\Xml\*.hbm.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

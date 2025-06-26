@@ -8,7 +8,7 @@ public class PersonMap : ClassMap<Person>
     public PersonMap()
     {
         Table("Person");
-        Id(x => x.Id).GeneratedBy.Assigned();
+        Id(x => x.Id).GeneratedBy.Native();
         Map(x => x.Name);
     }
 }

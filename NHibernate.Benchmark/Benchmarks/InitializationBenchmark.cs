@@ -49,7 +49,11 @@ public class InitializationBenchmark
     public ISessionFactory FluentInitialization()
     {
         cfg = Fluently.Configure(cfg)
-            .Mappings(m => m.FluentMappings.Add<PersonMap>())
+            .Mappings(m =>
+            {
+                m.FluentMappings.Add<PersonMap>();
+                m.FluentMappings.Add<AuthorMap>();
+            })
             .BuildConfiguration();
         return UseConfiguration(cfg);
     }
@@ -68,6 +72,7 @@ public class InitializationBenchmark
     public ISessionFactory XmlInitialization()
     {
         cfg.AddFile("Mappings/Xml/Person.hbm.xml");
+        cfg.AddFile("Mappings/Xml/Author.hbm.xml");
         return UseConfiguration(cfg);
 
     }
@@ -85,6 +90,7 @@ public class InitializationBenchmark
     {
         var mapper = new ModelMapper();
         mapper.AddMapping<PersonMapping>();
+        mapper.AddMapping<AuthorMapping>();
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
         return UseConfiguration(cfg);
     }

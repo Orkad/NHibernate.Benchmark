@@ -9,7 +9,7 @@ public class PersonMapping : ClassMapping<Person>
     public PersonMapping()
     {
         Table("Person");
-        Id(x => x.Id, m => m.Generator(Generators.Assigned));
+        Id(x => x.Id, m => m.Generator(Generators.Native));
         Property(x => x.Name);
     }
 }
