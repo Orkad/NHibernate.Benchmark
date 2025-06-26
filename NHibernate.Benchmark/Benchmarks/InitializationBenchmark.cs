@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate.Benchmark.Helpers;
@@ -12,7 +13,7 @@ using NHibernate.Tool.hbm2ddl;
 namespace NHibernate.Benchmark.Benchmarks;
 
 
-[ShortRunJob]
+[SimpleJob(RunStrategy.ColdStart, launchCount: 3, iterationCount: 1)]
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
