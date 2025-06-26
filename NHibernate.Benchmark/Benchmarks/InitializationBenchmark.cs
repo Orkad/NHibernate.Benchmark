@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
+using BenchmarkDotNet.Jobs;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate.Benchmark.Mappings.ByCode;
@@ -13,14 +14,18 @@ using System.Reflection;
 namespace NHibernate.Benchmark.Benchmarks;
 
 
-[SimpleJob(RunStrategy.ColdStart, launchCount: 3, iterationCount: 1)]
+[SimpleJob(RunStrategy.ColdStart, runtimeMoniker: RuntimeMoniker.Net48, launchCount: 3, iterationCount: 1)]
+[SimpleJob(RunStrategy.ColdStart, runtimeMoniker: RuntimeMoniker.Net80, launchCount: 3, iterationCount: 1)]
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
     private static readonly Assembly assembly = typeof(Person).Assembly;
-    private static Configuration CreateBaseConfiguration()
+    private Configuration cfg;
+
+    [IterationSetup]
+    public void CreateBaseConfiguration()
     {
-        var cfg = new Configuration();
+        cfg = new Configuration();
         cfg.DataBaseIntegration(db =>
         {
             db.Dialect<Dialect.SQLiteDialect>();
@@ -29,7 +34,6 @@ public class InitializationBenchmark
             db.ConnectionReleaseMode = ConnectionReleaseMode.OnClose;
             db.LogSqlInConsole = false;
         });
-        return cfg;
     }
 
     private static ISessionFactory UseConfiguration(Configuration configuration)
@@ -44,7 +48,6 @@ public class InitializationBenchmark
     [Benchmark]
     public ISessionFactory FluentInitialization()
     {
-        var cfg = CreateBaseConfiguration();
         cfg = Fluently.Configure(cfg)
             .Mappings(m => m.FluentMappings.Add<PersonMap>())
             .BuildConfiguration();
@@ -54,8 +57,6 @@ public class InitializationBenchmark
     [Benchmark(Baseline = true)]
     public ISessionFactory FluentInitializationFromAssembly()
     {
-        var cfg = CreateBaseConfiguration();
-
         var sf = Fluently.Configure(cfg)
             .Mappings(m => m.FluentMappings.AddFromAssembly(assembly))
             .BuildSessionFactory();
@@ -66,8 +67,6 @@ public class InitializationBenchmark
     [Benchmark]
     public ISessionFactory XmlInitialization()
     {
-        var cfg = CreateBaseConfiguration();
-
         cfg.AddFile("Mappings/Xml/Person.hbm.xml");
         return UseConfiguration(cfg);
 
@@ -76,8 +75,6 @@ public class InitializationBenchmark
     [Benchmark]
     public ISessionFactory XmlInitializationFromAssembly()
     {
-        var cfg = CreateBaseConfiguration();
-
         cfg.AddAssembly(assembly);
         return UseConfiguration(cfg);
 
@@ -86,8 +83,6 @@ public class InitializationBenchmark
     [Benchmark]
     public ISessionFactory ByCodeInitialization()
     {
-        var cfg = CreateBaseConfiguration();
-
         var mapper = new ModelMapper();
         mapper.AddMapping<PersonMapping>();
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
@@ -97,8 +92,6 @@ public class InitializationBenchmark
     [Benchmark]
     public ISessionFactory ByCodeInitializationFromAssembly()
     {
-        var cfg = CreateBaseConfiguration();
-
         var mapper = new ModelMapper();
         mapper.AddMappings(assembly.GetExportedTypes());
         cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
