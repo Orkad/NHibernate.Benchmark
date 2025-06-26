@@ -13,17 +13,22 @@ using System.Reflection;
 
 namespace NHibernate.Benchmark.Benchmarks;
 
-
 [SimpleJob(
     RunStrategy.ColdStart, runtimeMoniker: 
     RuntimeMoniker.Net48, 
-    launchCount: 10, 
+    launchCount: 30, 
     iterationCount: 1, 
     invocationCount: 1)]
 [SimpleJob(
     RunStrategy.ColdStart, 
     runtimeMoniker: RuntimeMoniker.Net80, 
-    launchCount: 10, 
+    launchCount: 30, 
+    iterationCount: 1,
+    invocationCount: 1)]
+[SimpleJob(
+    RunStrategy.ColdStart, 
+    runtimeMoniker: RuntimeMoniker.Net90, 
+    launchCount: 30, 
     iterationCount: 1,
     invocationCount: 1)]
 [MemoryDiagnoser]
