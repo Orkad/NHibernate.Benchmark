@@ -7,6 +7,10 @@
     "InitializationBenchmark": {
       "commandName": "Project",
       "commandLineArgs": "-f NHibernate.Benchmark.InitializationBenchmark*"
+    },
+    "ProjectionBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-f NHibernate.Benchmark.ProjectionBenchmark*"
     }
   }
 }
