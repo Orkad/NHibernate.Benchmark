@@ -4,6 +4,11 @@
     <id name="Id">
       <generator class="native"/>
     </id>
-    <property name="Name"/>
+    <property name="FirstName"/>
+    <property name="LastName"/>
+    <property name="Address"/>
+    <property name="City"/>
+    <property name="State"/>
+    <property name="ZipCode"/>
   </class>
 </hibernate-mapping>

@@ -50,7 +50,7 @@ public class TrackingBenchmark
         using var statelessSession = sessionFactory.OpenStatelessSession(connection);
         for (int i = 0; i < ElementsCount; i++)
         {
-            var person = new Person { Id = i, Name = $"Person {i}" };
+            var person = new Person { Id = i, FirstName = $"Person {i}" };
             statelessSession.Insert(person);
         }
     }

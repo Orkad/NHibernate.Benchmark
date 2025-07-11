@@ -9,6 +9,11 @@ public class PersonMap : ClassMap<Person>
     {
         Table("Person");
         Id(x => x.Id).GeneratedBy.Native();
-        Map(x => x.Name);
+        Map(x => x.FirstName);
+        Map(x => x.LastName);
+        Map(x => x.Address);
+        Map(x => x.City);
+        Map(x => x.State);
+        Map(x => x.ZipCode);
     }
 }

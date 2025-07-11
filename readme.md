@@ -54,45 +54,45 @@ RunStrategy=ColdStart  UnrollFactor=1
 | SessionTracking | 524288        | 244,799.6 us | 29,691.5 us | 44,440.8 us | 226,894.95 us | 28000.0000 | 4000.0000 | 180224.66 KB |
 | SessionTracking | 1048576       | 458,840.9 us | 23,133.9 us | 34,625.8 us | 452,925.45 us | 56000.0000 | 8000.0000 | 360448.66 KB |
 
-| Method                | ElementsCount | Mean      | Error     | StdDev    | Median    | Gen0      | Gen1      | Gen2      | Allocated   |
-|---------------------- |-------------- |----------:|----------:|----------:|----------:|----------:|----------:|----------:|------------:|
-| QueryOverNoProjection | 8             |  31.31 ms |  4.431 ms |  2.931 ms |  30.16 ms |         - |         - |         - |    26.35 KB |
-| QueryOverProjection   | 8             |  47.64 ms |  2.110 ms |  1.395 ms |  47.30 ms |         - |         - |         - |    33.09 KB |
-| LinqNoProjection      | 8             | 101.39 ms |  6.031 ms |  3.989 ms | 100.24 ms |         - |         - |         - |     18.1 KB |
-| LinqProjection        | 8             | 123.79 ms |  3.850 ms |  2.547 ms | 123.06 ms |         - |         - |         - |    23.41 KB |
-| HqlNoProjection       | 8             |  81.42 ms |  7.267 ms |  4.807 ms |  80.05 ms |         - |         - |         - |    14.04 KB |
-| HqlProjection         | 8             | 102.37 ms |  7.449 ms |  4.927 ms |  99.67 ms |         - |         - |         - |    28.64 KB |
-| SqlNoProjection       | 8             |  25.88 ms |  1.388 ms |  0.918 ms |  25.93 ms |         - |         - |         - |    21.72 KB |
-| SqlProjection         | 8             |  30.68 ms |  2.487 ms |  1.645 ms |  30.31 ms |         - |         - |         - |    34.47 KB |
-| QueryOverNoProjection | 64            |  27.42 ms |  1.286 ms |  0.850 ms |  27.45 ms |         - |         - |         - |    69.48 KB |
-| QueryOverProjection   | 64            |  46.99 ms |  2.122 ms |  1.403 ms |  46.60 ms |         - |         - |         - |    45.84 KB |
-| LinqNoProjection      | 64            | 100.84 ms |  3.381 ms |  2.237 ms | 100.35 ms |         - |         - |         - |    62.69 KB |
-| LinqProjection        | 64            | 125.05 ms |  9.036 ms |  5.977 ms | 123.26 ms |         - |         - |         - |     36.3 KB |
-| HqlNoProjection       | 64            |  80.77 ms |  3.365 ms |  2.226 ms |  80.35 ms |         - |         - |         - |    57.68 KB |
-| HqlProjection         | 64            | 106.94 ms | 19.684 ms | 13.020 ms | 103.00 ms |         - |         - |         - |    41.91 KB |
-| SqlNoProjection       | 64            |  25.81 ms |  2.274 ms |  1.504 ms |  25.35 ms |         - |         - |         - |    68.42 KB |
-| SqlProjection         | 64            |  31.88 ms |  2.288 ms |  1.513 ms |  31.67 ms |         - |         - |         - |    47.73 KB |
-| QueryOverNoProjection | 512           |  28.66 ms |  1.315 ms |  0.870 ms |  28.66 ms |         - |         - |         - |   412.21 KB |
-| QueryOverProjection   | 512           |  48.72 ms |  4.561 ms |  3.017 ms |  48.54 ms |         - |         - |         - |   150.67 KB |
-| LinqNoProjection      | 512           | 132.59 ms | 57.544 ms | 38.062 ms | 105.39 ms |         - |         - |         - |   416.05 KB |
-| LinqProjection        | 512           | 139.00 ms | 51.027 ms | 33.751 ms | 127.83 ms |         - |         - |         - |   141.23 KB |
-| HqlNoProjection       | 512           |  82.40 ms |  5.173 ms |  3.422 ms |  82.09 ms |         - |         - |         - |   403.98 KB |
-| HqlProjection         | 512           | 102.36 ms |  6.540 ms |  4.326 ms | 100.27 ms |         - |         - |         - |   150.27 KB |
-| SqlNoProjection       | 512           |  27.79 ms |  3.626 ms |  2.398 ms |  26.75 ms |         - |         - |         - |   439.22 KB |
-| SqlProjection         | 512           |  31.25 ms |  1.594 ms |  1.054 ms |  31.11 ms |         - |         - |         - |   156.09 KB |
-| QueryOverNoProjection | 4096          |  37.77 ms |  1.907 ms |  1.261 ms |  37.82 ms |         - |         - |         - |  3270.84 KB |
-| QueryOverProjection   | 4096          |  52.48 ms |  2.547 ms |  1.684 ms |  52.07 ms |         - |         - |         - |    990.7 KB |
-| LinqNoProjection      | 4096          | 110.62 ms |  3.824 ms |  2.529 ms | 110.55 ms |         - |         - |         - |  3358.83 KB |
-| LinqProjection        | 4096          | 126.12 ms |  3.175 ms |  2.100 ms | 126.16 ms |         - |         - |         - |   981.48 KB |
-| HqlNoProjection       | 4096          |  90.50 ms |  5.235 ms |  3.462 ms |  89.52 ms |         - |         - |         - |  3290.68 KB |
-| HqlProjection         | 4096          | 105.01 ms |  3.682 ms |  2.435 ms | 105.64 ms |         - |         - |         - |  1018.41 KB |
-| SqlNoProjection       | 4096          |  35.77 ms |  3.742 ms |  2.475 ms |  34.98 ms |         - |         - |         - |  3521.92 KB |
-| SqlProjection         | 4096          |  35.03 ms |  4.709 ms |  3.115 ms |  34.33 ms |         - |         - |         - |  1024.23 KB |
-| QueryOverNoProjection | 32768         | 171.77 ms | 33.403 ms | 22.094 ms | 164.51 ms | 4000.0000 | 2000.0000 | 2000.0000 | 26762.08 KB |
-| QueryOverProjection   | 32768         |  99.02 ms |  5.398 ms |  3.571 ms |  99.24 ms | 1000.0000 |         - |         - |  7758.82 KB |
-| LinqNoProjection      | 32768         | 244.37 ms |  9.411 ms |  6.225 ms | 244.76 ms | 4000.0000 | 2000.0000 | 2000.0000 | 27521.16 KB |
-| LinqProjection        | 32768         | 165.15 ms |  5.098 ms |  3.372 ms | 165.53 ms | 1000.0000 |         - |         - |  7701.66 KB |
-| HqlNoProjection       | 32768         | 238.20 ms | 13.220 ms |  8.744 ms | 239.45 ms | 3000.0000 | 1000.0000 |         - | 27004.01 KB |
-| HqlProjection         | 32768         | 152.21 ms |  5.799 ms |  3.835 ms | 150.74 ms | 1000.0000 |         - |         - |  7962.55 KB |
-| SqlNoProjection       | 32768         | 165.41 ms |  7.226 ms |  4.780 ms | 165.29 ms | 4000.0000 | 2000.0000 | 2000.0000 | 28809.55 KB |
-| SqlProjection         | 32768         |  74.47 ms |  7.403 ms |  4.896 ms |  72.08 ms | 1000.0000 |         - |         - |  7968.38 KB |
+| Method                | ElementsCount | Mean         | Error        | StdDev       | Min         | Max          | Median       | Gen0      | Gen1      | Gen2      | Allocated   |
+|---------------------- |-------------- |-------------:|-------------:|-------------:|------------:|-------------:|-------------:|----------:|----------:|----------:|------------:|
+| QueryOverNoProjection | 3             |     352.3 us |     77.49 us |     51.25 us |    259.8 us |     416.6 us |     353.5 us |         - |         - |         - |    31.04 KB |
+| QueryOverProjection   | 3             |     328.9 us |     83.39 us |     55.16 us |    231.7 us |     418.4 us |     341.8 us |         - |         - |         - |    38.85 KB |
+| LinqNoProjection      | 3             |     262.5 us |     70.91 us |     46.90 us |    195.0 us |     337.1 us |     255.1 us |         - |         - |         - |    18.13 KB |
+| LinqProjection        | 3             |     347.2 us |     96.74 us |     63.99 us |    244.3 us |     424.6 us |     362.6 us |         - |         - |         - |    23.33 KB |
+| HqlNoProjection       | 3             |     264.9 us |     40.03 us |     23.82 us |    229.2 us |     294.2 us |     263.6 us |         - |         - |         - |    14.15 KB |
+| HqlProjection         | 3             |     623.7 us |     80.25 us |     53.08 us |    528.8 us |     715.8 us |     612.2 us |         - |         - |         - |    35.26 KB |
+| SqlNoProjection       | 3             |     249.9 us |     89.10 us |     53.02 us |    191.0 us |     346.6 us |     242.0 us |         - |         - |         - |    20.25 KB |
+| SqlProjection         | 3             |     535.3 us |     76.20 us |     50.40 us |    479.1 us |     626.9 us |     520.1 us |         - |         - |         - |    42.65 KB |
+| QueryOverNoProjection | 30            |     343.6 us |     32.49 us |     21.49 us |    311.7 us |     383.9 us |     336.8 us |         - |         - |         - |    59.85 KB |
+| QueryOverProjection   | 30            |     355.7 us |     77.39 us |     51.19 us |    265.9 us |     427.9 us |     352.7 us |         - |         - |         - |    46.05 KB |
+| LinqNoProjection      | 30            |     321.4 us |     67.64 us |     44.74 us |    275.2 us |     423.5 us |     315.2 us |         - |         - |         - |    47.74 KB |
+| LinqProjection        | 30            |     308.4 us |     44.44 us |     26.45 us |    263.4 us |     341.2 us |     318.6 us |         - |         - |         - |    31.02 KB |
+| HqlNoProjection       | 30            |     312.9 us |     53.00 us |     35.06 us |    266.9 us |     382.9 us |     313.1 us |         - |         - |         - |    43.26 KB |
+| HqlProjection         | 30            |     708.8 us |     88.65 us |     58.64 us |    636.3 us |     796.3 us |     696.3 us |         - |         - |         - |    43.07 KB |
+| SqlNoProjection       | 30            |     286.8 us |     22.64 us |     14.97 us |    266.1 us |     312.9 us |     286.0 us |         - |         - |         - |    50.84 KB |
+| SqlProjection         | 30            |     573.7 us |     58.19 us |     38.49 us |    501.2 us |     626.2 us |     574.9 us |         - |         - |         - |    50.46 KB |
+| QueryOverNoProjection | 300           |   1,409.8 us |     50.70 us |     33.54 us |  1,372.7 us |   1,461.2 us |   1,403.2 us |         - |         - |         - |   357.66 KB |
+| QueryOverProjection   | 300           |     782.1 us |     85.67 us |     56.66 us |    685.1 us |     883.7 us |     778.1 us |         - |         - |         - |   123.99 KB |
+| LinqNoProjection      | 300           |   1,468.7 us |    149.52 us |     98.90 us |  1,338.6 us |   1,667.7 us |   1,459.0 us |         - |         - |         - |   358.63 KB |
+| LinqProjection        | 300           |     555.0 us |     71.07 us |     42.29 us |    485.5 us |     633.1 us |     545.1 us |         - |         - |         - |    115.7 KB |
+| HqlNoProjection       | 300           |   1,385.4 us |    115.89 us |     68.97 us |  1,310.7 us |   1,541.8 us |   1,364.2 us |         - |         - |         - |   346.55 KB |
+| HqlProjection         | 300           |   1,173.2 us |     49.53 us |     29.48 us |  1,136.5 us |   1,231.8 us |   1,169.5 us |         - |         - |         - |   126.49 KB |
+| SqlNoProjection       | 300           |   1,684.7 us |     73.51 us |     48.62 us |  1,620.1 us |   1,761.8 us |   1,681.5 us |         - |         - |         - |   368.89 KB |
+| SqlProjection         | 300           |     967.6 us |     98.57 us |     65.20 us |    908.8 us |   1,112.8 us |     951.2 us |         - |         - |         - |   133.88 KB |
+| QueryOverNoProjection | 3000          |  13,688.7 us |    855.72 us |    447.56 us | 13,107.0 us |  14,457.7 us |  13,541.2 us |         - |         - |         - |  3322.45 KB |
+| QueryOverProjection   | 3000          |   4,578.0 us |    159.36 us |    105.41 us |  4,450.5 us |   4,755.0 us |   4,569.3 us |         - |         - |         - |   884.57 KB |
+| LinqNoProjection      | 3000          |  15,953.1 us |  3,786.76 us |  2,253.44 us | 13,484.4 us |  20,057.3 us |  16,704.7 us |         - |         - |         - |  3414.47 KB |
+| LinqProjection        | 3000          |   3,048.0 us |    178.38 us |    117.99 us |  2,884.1 us |   3,209.2 us |   3,045.4 us |         - |         - |         - |   903.97 KB |
+| HqlNoProjection       | 3000          |  12,460.4 us |    437.85 us |    260.56 us | 12,211.0 us |  12,864.0 us |  12,363.6 us |         - |         - |         - |  3346.32 KB |
+| HqlProjection         | 3000          |   4,298.8 us |    233.53 us |    154.47 us |  4,126.2 us |   4,563.6 us |   4,284.5 us |         - |         - |         - |   921.97 KB |
+| SqlNoProjection       | 3000          |  12,599.6 us |  2,232.82 us |  1,328.71 us | 11,423.5 us |  15,261.0 us |  12,236.4 us |         - |         - |         - |  3516.32 KB |
+| SqlProjection         | 3000          |   4,078.3 us |    215.01 us |    142.22 us |  3,908.8 us |   4,337.4 us |   4,077.0 us |         - |         - |         - |   929.36 KB |
+| QueryOverNoProjection | 30000         | 101,721.4 us |  6,148.75 us |  3,215.91 us | 97,256.3 us | 107,020.3 us | 100,869.8 us | 5000.0000 | 3000.0000 | 1000.0000 | 32252.89 KB |
+| QueryOverProjection   | 30000         |  37,953.9 us |  2,210.75 us |  1,462.27 us | 35,520.1 us |  40,744.7 us |  37,848.1 us | 1000.0000 |         - |         - |  8373.59 KB |
+| LinqNoProjection      | 30000         | 121,292.6 us | 44,709.77 us | 29,572.74 us | 94,743.4 us | 176,979.4 us | 109,202.1 us | 5000.0000 | 3000.0000 | 1000.0000 | 33030.14 KB |
+| LinqProjection        | 30000         |  24,685.4 us |    831.59 us |    494.86 us | 24,310.2 us |  25,809.9 us |  24,415.1 us | 1000.0000 |         - |         - |  8445.46 KB |
+| HqlNoProjection       | 30000         | 120,288.3 us | 37,226.47 us | 24,623.00 us | 99,698.4 us | 171,160.1 us | 112,129.1 us | 5000.0000 | 3000.0000 | 1000.0000 | 32513.96 KB |
+| HqlProjection         | 30000         |  40,731.3 us | 13,094.50 us |  8,661.20 us | 30,998.8 us |  50,774.9 us |  39,376.1 us | 1000.0000 |         - |         - |   8648.2 KB |
+| SqlNoProjection       | 30000         |  99,713.4 us |  6,197.59 us |  3,241.46 us | 92,783.8 us | 102,550.6 us | 100,397.7 us | 5000.0000 | 3000.0000 | 1000.0000 | 34160.45 KB |
+| SqlProjection         | 30000         |  39,265.0 us | 10,700.97 us |  7,078.03 us | 29,838.4 us |  46,340.5 us |  40,857.5 us | 1000.0000 |         - |         - |  8655.59 KB |

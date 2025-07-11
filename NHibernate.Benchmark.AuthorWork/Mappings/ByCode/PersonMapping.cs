@@ -10,6 +10,11 @@ public class PersonMapping : ClassMapping<Person>
     {
         Table("Person");
         Id(x => x.Id, m => m.Generator(Generators.Native));
-        Property(x => x.Name);
+        Property(x => x.FirstName);
+        Property(x => x.LastName);
+        Property(x => x.Address);
+        Property(x => x.City);
+        Property(x => x.State);
+        Property(x => x.ZipCode);
     }
 }
