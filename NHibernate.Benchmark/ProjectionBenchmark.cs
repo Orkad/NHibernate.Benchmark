@@ -19,18 +19,22 @@ public class PersonDto
     public long Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string ZipCode { get; set; }
 }
 
-[SimpleJob(RuntimeMoniker.Net80, warmupCount: 3, iterationCount: 10, launchCount: 1)]
+[SimpleJob(RuntimeMoniker.Net80)]
 [MemoryDiagnoser]
-[MinColumn, MaxColumn, MeanColumn, MedianColumn]
+[MinColumn, MaxColumn]
 public class ProjectionBenchmark
 {
     private ISessionFactory sessionFactory;
     private DbConnection connection;
     private ISession session;
 
-    [Params(3, 30, 300, 3000, 30000)]
+    [Params(1, 5, 10, 50, 100, 500, 1000, 5000)]
     public int ElementsCount { get; set; }
 
     [GlobalSetup]
@@ -80,71 +84,150 @@ public class ProjectionBenchmark
         session = null;
     }
 
-    [Benchmark]
-    public IList<Person> QueryOverNoProjection()
-    {
-        return session.QueryOver<Person>().List();
-    }
+    //[Benchmark]
+    //public IList<Person> QueryOverNoProjection()
+    //{
+    //    return session.QueryOver<Person>().List();
+    //}
+
+    //[Benchmark]
+    //public IList<PersonDto> QueryOverProjection()
+    //{
+    //    PersonDto personAlias = null;
+    //    return session.QueryOver<Person>()
+    //        .SelectList(list => list
+    //            .Select(Projections.Property<Person>(p => p.Id).WithAlias(() => personAlias.Id))
+    //            .Select(Projections.Property<Person>(p => p.FirstName).WithAlias(() => personAlias.FirstName))
+    //            .Select(Projections.Property<Person>(p => p.LastName).WithAlias(() => personAlias.LastName))
+    //        )
+    //        .TransformUsing(Transformers.AliasToBean<PersonDto>())
+    //        .List<PersonDto>();
+    //}
 
     [Benchmark]
-    public IList<PersonDto> QueryOverProjection()
-    {
-        PersonDto personAlias = null;
-        return session.QueryOver<Person>()
-            .SelectList(list => list
-                .Select(Projections.Property<Person>(p => p.Id).WithAlias(() => personAlias.Id))
-                .Select(Projections.Property<Person>(p => p.FirstName).WithAlias(() => personAlias.FirstName))
-                .Select(Projections.Property<Person>(p => p.LastName).WithAlias(() => personAlias.LastName))
-            )
-            .TransformUsing(Transformers.AliasToBean<PersonDto>())
-            .List<PersonDto>();
-    }
-
-    [Benchmark]
-    public IList<Person> LinqNoProjection()
+    public IList<Person> FullEntity()
     {
         return session.Query<Person>().ToList();
     }
 
     [Benchmark]
-    public IList<PersonDto> LinqProjection()
+    public IList<Person> FullEntityNoTracking()
+    {
+        return session.Query<Person>().WithOptions(o => o.SetReadOnly(true)).ToList();
+    }
+
+    [Benchmark]
+    public IList<PersonDto> Projection1Field()
+    {
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+        }).ToList();
+    }
+
+    [Benchmark]
+    public IList<PersonDto> Projection2Fields()
     {
         return session.Query<Person>().Select(p => new PersonDto
         {
             Id = p.Id,
             FirstName = p.FirstName,
-            LastName = p.LastName
         }).ToList();
     }
 
     [Benchmark]
-    public IList<Person> HqlNoProjection()
+    public IList<PersonDto> Projection3Fields()
     {
-        return session.CreateQuery("from Person")
-            .List<Person>();
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+        }).ToList();
     }
 
     [Benchmark]
-    public IList<PersonDto> HqlProjection()
+    public IList<PersonDto> Projection4Fields()
     {
-        return session.CreateQuery("select p.Id as Id, p.FirstName as FirstName, p.LastName as LastName from Person p")
-        .SetResultTransformer(Transformers.AliasToBean<PersonDto>())
-        .List<PersonDto>();
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            Address = p.Address,
+        }).ToList();
     }
 
     [Benchmark]
-    public IList<Person> SqlNoProjection()
+    public IList<PersonDto> Projection5Fields()
     {
-        return session.CreateSQLQuery("SELECT * FROM Person")
-            .AddEntity(typeof(Person))
-            .List<Person>();
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            Address = p.Address,
+            City = p.City,
+        }).ToList();
     }
 
     [Benchmark]
-    public IList<PersonDto> SqlProjection()
+    public IList<PersonDto> Projection6Fields()
     {
-        return session.CreateSQLQuery("SELECT Id, FirstName, LastName FROM Person")
-            .SetResultTransformer(Transformers.AliasToBean<PersonDto>())
-            .List<PersonDto>();
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            Address = p.Address,
+            City = p.City,
+            State = p.State,
+        }).ToList();
     }
+
+    [Benchmark]
+    public IList<PersonDto> ProjectionFull()
+    {
+        return session.Query<Person>().Select(p => new PersonDto
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            Address = p.Address,
+            City = p.City,
+            State = p.State,
+            ZipCode = p.ZipCode,
+        }).ToList();
+    }
+
+    //[Benchmark]
+    //public IList<Person> HqlNoProjection()
+    //{
+    //    return session.CreateQuery("from Person")
+    //        .List<Person>();
+    //}
+
+    //[Benchmark]
+    //public IList<PersonDto> HqlProjection()
+    //{
+    //    return session.CreateQuery("select p.Id as Id, p.FirstName as FirstName, p.LastName as LastName from Person p")
+    //    .SetResultTransformer(Transformers.AliasToBean<PersonDto>())
+    //    .List<PersonDto>();
+    //}
+
+    //[Benchmark]
+    //public IList<Person> SqlNoProjection()
+    //{
+    //    return session.CreateSQLQuery("SELECT * FROM Person")
+    //        .AddEntity(typeof(Person))
+    //        .List<Person>();
+    //}
+
+    //[Benchmark]
+    //public IList<PersonDto> SqlProjection()
+    //{
+    //    return session.CreateSQLQuery("SELECT Id, FirstName, LastName FROM Person")
+    //        .SetResultTransformer(Transformers.AliasToBean<PersonDto>())
+    //        .List<PersonDto>();
+    //}
 }

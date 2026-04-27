@@ -29,7 +29,7 @@ namespace NHibernate.Benchmark;
     invocationCount: 1)]
 [SimpleJob(
     RunStrategy.ColdStart,
-    runtimeMoniker: RuntimeMoniker.Net90,
+    runtimeMoniker: RuntimeMoniker.Net10_0,
     launchCount: 30,
     iterationCount: 1,
     invocationCount: 1)]

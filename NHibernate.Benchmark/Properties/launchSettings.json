@@ -11,6 +11,10 @@
     "ProjectionBenchmark": {
       "commandName": "Project",
       "commandLineArgs": "-f NHibernate.Benchmark.ProjectionBenchmark*"
+    },
+    "LatencyBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-f NHibernate.Benchmark.LatencyBenchmark*"
     }
   }
 }
