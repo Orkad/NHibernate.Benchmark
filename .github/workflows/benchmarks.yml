@@ -1,0 +1,87 @@
+name: Run BenchmarkDotNet suite
+
+# Manual trigger only: these are BenchmarkDotNet perf measurements, not correctness
+# tests, and several of them (TrackingBenchmark scales up to 1,048,576 rows,
+# InitializationBenchmark does 30 cold-start process launches per runtime) are far
+# too slow/noisy to run on every push or PR.
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Which benchmark class to run
+        type: choice
+        default: All
+        options:
+          - All
+          - InitializationBenchmark
+          - ProjectionBenchmark
+          - TrackingBenchmark
+          - LatencyBenchmark
+      host_tfm:
+        description: Target framework to build/run the exe under (dotnet run -f)
+        type: choice
+        default: net8.0
+        options:
+          - net8.0
+          - net9.0
+
+jobs:
+  benchmark:
+    # windows-latest is required, not just convenient: InitializationBenchmark's
+    # [SimpleJob(RuntimeMoniker.Net48)] job needs .NET Framework 4.8 (Windows-only),
+    # and System.Data.SQLite.Core only ships native SQLite interop binaries for Windows.
+    runs-on: windows-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: InitializationBenchmark
+            filter: "NHibernate.Benchmark.InitializationBenchmark*"
+          - name: ProjectionBenchmark
+            filter: "NHibernate.Benchmark.ProjectionBenchmark*"
+          - name: TrackingBenchmark
+            filter: "NHibernate.Benchmark.TrackingBenchmark*"
+          - name: LatencyBenchmark
+            filter: "NHibernate.Benchmark.LatencyBenchmark*"
+    if: ${{ github.event.inputs.benchmark == 'All' || github.event.inputs.benchmark == matrix.name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # net48 is served by the .NET Framework 4.8 dev pack preinstalled on
+      # windows-latest runners; only the modern SDKs need explicit setup.
+      # net10.0 is only used by NHibernate.Benchmark.AuthorWork and by
+      # InitializationBenchmark's [SimpleJob(RuntimeMoniker.Net10_0)] job — the exe
+      # project's own TargetFrameworks stops at net9.0 (see CLAUDE.md), so that
+      # specific cold-start job may fail to resolve even with the SDK installed.
+      - name: Setup .NET SDKs
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore NHibernate.Benchmark.sln
+
+      - name: Build (Release)
+        run: dotnet build NHibernate.Benchmark.sln -c Release --no-restore
+
+      - name: Run ${{ matrix.name }}
+        run: >
+          dotnet run -c Release --no-build
+          --project NHibernate.Benchmark/NHibernate.Benchmark.csproj
+          -f ${{ github.event.inputs.host_tfm }}
+          -- -f "${{ matrix.filter }}" --exporters json html
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.name }}
+          path: |
+            **/BenchmarkDotNet.Artifacts/results/**
+            **/BenchmarkDotNet.Artifacts/*.log
+          if-no-files-found: warn

@@ -38,6 +38,11 @@ This environment does not have the `dotnet` SDK installed, so builds/benchmarks 
 executed here — describe/edit code changes but note to the user that verification requires a
 machine with the .NET SDK (and, for the `net48` TFM, .NET Framework 4.8/mono).
 
+`.github/workflows/benchmarks.yml` runs the suite on a `windows-latest` GitHub Actions runner
+(required for the `net48` job and for `System.Data.SQLite.Core`'s Windows-only native binaries),
+triggered manually (`workflow_dispatch`) with inputs to pick one benchmark class or `All` and the
+host TFM — never on every push, since these are slow perf runs, not correctness tests.
+
 When a `dotnet` SDK is available:
 
 ```bash
