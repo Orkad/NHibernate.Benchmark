@@ -17,16 +17,15 @@ setup/usage docs there.
 
 ## Solution layout
 
-- `NHibernate.Benchmark.sln` — two projects:
+- `NHibernate.Benchmark.sln` — two projects, both targeting `net48;net10.0`:
   - `NHibernate.Benchmark/` — the executable BenchmarkDotNet suite (`OutputType=Exe`).
-    Targets `net48;net8.0;net9.0`.
   - `NHibernate.Benchmark.AuthorWork/` — class library with the shared domain model
     (`Person`, `Author`, `Work`, `Book`, `Song`) and three parallel mapping styles under
-    `Mappings/{ByCode,Fluent,Xml}/`. Targets `net48;net8.0;net10.0`.
-  - Note the target framework lists differ (net9.0 vs net10.0) between the two projects, and
-    `InitializationBenchmark` references `RuntimeMoniker.Net10_0` in a `[SimpleJob]` attribute
-    even though the executable project's TFMs stop at net9.0 — be aware of this mismatch if a
-    build/job fails to resolve for that runtime moniker.
+    `Mappings/{ByCode,Fluent,Xml}/`.
+  - All `[SimpleJob]` runtime monikers across the four benchmark classes are `Net48`/`Net10_0`
+    only, matching these TFMs — net8.0/net9.0 support was intentionally dropped (2026-08-18) to
+    keep the two projects' target frameworks in sync and avoid resolving jobs for a TFM the exe
+    project doesn't build.
 - All storage in benchmarks is an in-memory SQLite database (`Data Source=:memory:;Version=3;New=True;`)
   via `System.Data.SQLite.Core`, configured through `NHibernate.Cfg.Configuration.DataBaseIntegration`.
 - Test data is generated with `Bogus` (seeded via `Bogus.Randomizer.Seed`) or simple loops, inserted
@@ -38,6 +37,13 @@ This environment does not have the `dotnet` SDK installed, so builds/benchmarks 
 executed here — describe/edit code changes but note to the user that verification requires a
 machine with the .NET SDK (and, for the `net48` TFM, .NET Framework 4.8/mono).
 
+`.github/workflows/benchmarks.yml` runs the suite on a `windows-latest` GitHub Actions runner
+(required for the `net48` job and for `System.Data.SQLite.Core`'s Windows-only native binaries),
+triggered manually (`workflow_dispatch`) with an input to pick one benchmark class or `All` —
+never on every push, since these are slow perf runs, not correctness tests. It only needs the
+`net10.0` SDK set up explicitly; `net48` is served by the .NET Framework dev pack preinstalled on
+the runner image.
+
 When a `dotnet` SDK is available:
 
 ```bash
@@ -45,7 +51,7 @@ When a `dotnet` SDK is available:
 dotnet build NHibernate.Benchmark.sln
 
 # Build/run just the benchmark exe for one TFM
-dotnet build NHibernate.Benchmark/NHibernate.Benchmark.csproj -f net8.0
+dotnet build NHibernate.Benchmark/NHibernate.Benchmark.csproj -f net10.0
 ```
 
 BenchmarkDotNet benchmarks are run via `BenchmarkSwitcher`, not `dotnet test` — there is no unit
@@ -54,10 +60,10 @@ test project in this repo. Run the compiled benchmark exe with `-f <filter>` to 
 expected filter pattern, e.g. `-f NHibernate.Benchmark.ProjectionBenchmark*`):
 
 ```bash
-dotnet run -c Release --project NHibernate.Benchmark -f net8.0 -- -f NHibernate.Benchmark.ProjectionBenchmark*
-dotnet run -c Release --project NHibernate.Benchmark -f net8.0 -- -f NHibernate.Benchmark.InitializationBenchmark*
-dotnet run -c Release --project NHibernate.Benchmark -f net8.0 -- -f NHibernate.Benchmark.TrackingBenchmark*
-dotnet run -c Release --project NHibernate.Benchmark -f net8.0 -- -f NHibernate.Benchmark.LatencyBenchmark*
+dotnet run -c Release --project NHibernate.Benchmark -f net10.0 -- -f NHibernate.Benchmark.ProjectionBenchmark*
+dotnet run -c Release --project NHibernate.Benchmark -f net10.0 -- -f NHibernate.Benchmark.InitializationBenchmark*
+dotnet run -c Release --project NHibernate.Benchmark -f net10.0 -- -f NHibernate.Benchmark.TrackingBenchmark*
+dotnet run -c Release --project NHibernate.Benchmark -f net10.0 -- -f NHibernate.Benchmark.LatencyBenchmark*
 ```
 
 BenchmarkDotNet always builds a Release-mode isolated copy before executing, so always build/run
@@ -73,9 +79,9 @@ follow the same pattern (comment out, don't delete) if asked to prune benchmarks
 - **`InitializationBenchmark`** — compares session-factory build cost across the three mapping
   styles (Fluent / XML / ByCode) and, for each, "explicit type list" vs. "scan whole assembly".
   Uses `[IterationSetup]` to build a fresh `Configuration` per iteration and `ColdStart` jobs
-  across net48/net8.0/net10.0 (see the TFM mismatch note above) with `launchCount: 30`,
-  `iterationCount: 1`, `invocationCount: 1` — i.e. each launch is a full cold-start process, which
-  is what makes this comparable to real app-startup cost.
+  across net48/net10.0 with `launchCount: 30`, `iterationCount: 1`, `invocationCount: 1` — i.e.
+  each launch is a full cold-start process, which is what makes this comparable to real
+  app-startup cost.
 - **`ProjectionBenchmark`** — compares fetching full `Person` entities (tracked and read-only)
   against LINQ projections into `PersonDto` with an increasing number of selected columns
   (1 through all 7 fields), across `ElementsCount` row counts (`[Params]`). Data is seeded once in

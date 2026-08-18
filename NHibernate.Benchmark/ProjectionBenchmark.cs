@@ -25,7 +25,7 @@ public class PersonDto
     public string ZipCode { get; set; }
 }
 
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net10_0)]
 [MemoryDiagnoser]
 [MinColumn, MaxColumn]
 public class ProjectionBenchmark

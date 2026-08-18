@@ -1,0 +1,74 @@
+name: Run BenchmarkDotNet suite
+
+# Manual trigger only: these are BenchmarkDotNet perf measurements, not correctness
+# tests, and several of them (TrackingBenchmark scales up to 1,048,576 rows,
+# InitializationBenchmark does 30 cold-start process launches per runtime) are far
+# too slow/noisy to run on every push or PR.
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Which benchmark class to run
+        type: choice
+        default: All
+        options:
+          - All
+          - InitializationBenchmark
+          - ProjectionBenchmark
+          - TrackingBenchmark
+          - LatencyBenchmark
+
+jobs:
+  benchmark:
+    # windows-latest is required, not just convenient: InitializationBenchmark's
+    # [SimpleJob(RuntimeMoniker.Net48)] job needs .NET Framework 4.8 (Windows-only),
+    # and System.Data.SQLite.Core only ships native SQLite interop binaries for Windows.
+    runs-on: windows-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: InitializationBenchmark
+            filter: "NHibernate.Benchmark.InitializationBenchmark*"
+          - name: ProjectionBenchmark
+            filter: "NHibernate.Benchmark.ProjectionBenchmark*"
+          - name: TrackingBenchmark
+            filter: "NHibernate.Benchmark.TrackingBenchmark*"
+          - name: LatencyBenchmark
+            filter: "NHibernate.Benchmark.LatencyBenchmark*"
+    if: ${{ github.event.inputs.benchmark == 'All' || github.event.inputs.benchmark == matrix.name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # net48 is served by the .NET Framework 4.8 dev pack preinstalled on
+      # windows-latest runners; both projects now only target net48;net10.0
+      # (see CLAUDE.md), so net10.0 is the only SDK that needs explicit setup.
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore NHibernate.Benchmark.sln
+
+      - name: Build (Release)
+        run: dotnet build NHibernate.Benchmark.sln -c Release --no-restore
+
+      - name: Run ${{ matrix.name }}
+        run: >
+          dotnet run -c Release --no-build
+          --project NHibernate.Benchmark/NHibernate.Benchmark.csproj
+          -f net10.0
+          -- -f "${{ matrix.filter }}" --exporters json html
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.name }}
+          path: |
+            **/BenchmarkDotNet.Artifacts/results/**
+            **/BenchmarkDotNet.Artifacts/*.log
+          if-no-files-found: warn
