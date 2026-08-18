@@ -17,13 +17,6 @@ on:
           - ProjectionBenchmark
           - TrackingBenchmark
           - LatencyBenchmark
-      host_tfm:
-        description: Target framework to build/run the exe under (dotnet run -f)
-        type: choice
-        default: net8.0
-        options:
-          - net8.0
-          - net9.0
 
 jobs:
   benchmark:
@@ -50,18 +43,12 @@ jobs:
         uses: actions/checkout@v4
 
       # net48 is served by the .NET Framework 4.8 dev pack preinstalled on
-      # windows-latest runners; only the modern SDKs need explicit setup.
-      # net10.0 is only used by NHibernate.Benchmark.AuthorWork and by
-      # InitializationBenchmark's [SimpleJob(RuntimeMoniker.Net10_0)] job — the exe
-      # project's own TargetFrameworks stops at net9.0 (see CLAUDE.md), so that
-      # specific cold-start job may fail to resolve even with the SDK installed.
-      - name: Setup .NET SDKs
+      # windows-latest runners; both projects now only target net48;net10.0
+      # (see CLAUDE.md), so net10.0 is the only SDK that needs explicit setup.
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
-            9.0.x
-            10.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore
         run: dotnet restore NHibernate.Benchmark.sln
@@ -73,7 +60,7 @@ jobs:
         run: >
           dotnet run -c Release --no-build
           --project NHibernate.Benchmark/NHibernate.Benchmark.csproj
-          -f ${{ github.event.inputs.host_tfm }}
+          -f net10.0
           -- -f "${{ matrix.filter }}" --exporters json html
 
       - name: Upload results

@@ -13,7 +13,7 @@ namespace NHibernate.Benchmark;
 
 [SimpleJob(
     RunStrategy.Monitoring,
-    runtimeMoniker: RuntimeMoniker.Net80,
+    runtimeMoniker: RuntimeMoniker.Net10_0,
     iterationCount: 30)]
 [MemoryDiagnoser]
 public class TrackingBenchmark
