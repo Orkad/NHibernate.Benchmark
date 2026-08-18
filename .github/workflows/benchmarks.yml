@@ -19,7 +19,36 @@ on:
           - LatencyBenchmark
 
 jobs:
+  prepare:
+    # Builds the "benchmark" job's matrix from the `benchmark` input. This
+    # indirection is required because the `matrix` context is only available in a
+    # step-level `if:`, not a job-level one — filtering a job-level `if:` on
+    # `matrix.name` makes the whole workflow file invalid (GitHub rejects it with
+    # "Unrecognized named-value: 'matrix'"), so the unwanted entries have to be
+    # dropped before the matrix is expanded, not after.
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - id: set
+        env:
+          BENCHMARK: ${{ github.event.inputs.benchmark }}
+        run: |
+          ALL='{"include":[
+            {"name":"InitializationBenchmark","filter":"NHibernate.Benchmark.InitializationBenchmark*"},
+            {"name":"ProjectionBenchmark","filter":"NHibernate.Benchmark.ProjectionBenchmark*"},
+            {"name":"TrackingBenchmark","filter":"NHibernate.Benchmark.TrackingBenchmark*"},
+            {"name":"LatencyBenchmark","filter":"NHibernate.Benchmark.LatencyBenchmark*"}
+          ]}'
+          if [ "$BENCHMARK" = "All" ]; then
+            MATRIX=$(jq -c . <<< "$ALL")
+          else
+            MATRIX=$(jq -c --arg n "$BENCHMARK" '.include |= [.[] | select(.name == $n)]' <<< "$ALL")
+          fi
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+
   benchmark:
+    needs: prepare
     # windows-latest is required, not just convenient: InitializationBenchmark's
     # [SimpleJob(RuntimeMoniker.Net48)] job needs .NET Framework 4.8 (Windows-only),
     # and System.Data.SQLite.Core only ships native SQLite interop binaries for Windows.
@@ -27,17 +56,7 @@ jobs:
     timeout-minutes: 340
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: InitializationBenchmark
-            filter: "NHibernate.Benchmark.InitializationBenchmark*"
-          - name: ProjectionBenchmark
-            filter: "NHibernate.Benchmark.ProjectionBenchmark*"
-          - name: TrackingBenchmark
-            filter: "NHibernate.Benchmark.TrackingBenchmark*"
-          - name: LatencyBenchmark
-            filter: "NHibernate.Benchmark.LatencyBenchmark*"
-    if: ${{ github.event.inputs.benchmark == 'All' || github.event.inputs.benchmark == matrix.name }}
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
