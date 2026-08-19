@@ -67,7 +67,7 @@ public class TrackingBenchmark
             seedContext.Database.EnsureCreated();
             for (int i = 0; i < ElementsCount; i++)
             {
-                seedContext.People.Add(new EfPerson { Id = i, FirstName = $"Person {i}" });
+                seedContext.People.Add(new EfPerson { FirstName = $"Person {i}" });
             }
             seedContext.SaveChanges();
         }
