@@ -17,6 +17,9 @@ on:
           - ProjectionBenchmark
           - TrackingBenchmark
           - LatencyBenchmark
+          - EfCoreComparisonInitializationBenchmark
+          - EfCoreComparisonProjectionBenchmark
+          - EfCoreComparisonTrackingBenchmark
 
 jobs:
   prepare:
@@ -38,7 +41,10 @@ jobs:
             {"name":"InitializationBenchmark","filter":"NHibernate.Benchmark.InitializationBenchmark*"},
             {"name":"ProjectionBenchmark","filter":"NHibernate.Benchmark.ProjectionBenchmark*"},
             {"name":"TrackingBenchmark","filter":"NHibernate.Benchmark.TrackingBenchmark*"},
-            {"name":"LatencyBenchmark","filter":"NHibernate.Benchmark.LatencyBenchmark*"}
+            {"name":"LatencyBenchmark","filter":"NHibernate.Benchmark.LatencyBenchmark*"},
+            {"name":"EfCoreComparisonInitializationBenchmark","filter":"NHibernate.Benchmark.EfCoreComparison.InitializationBenchmark*"},
+            {"name":"EfCoreComparisonProjectionBenchmark","filter":"NHibernate.Benchmark.EfCoreComparison.ProjectionBenchmark*"},
+            {"name":"EfCoreComparisonTrackingBenchmark","filter":"NHibernate.Benchmark.EfCoreComparison.TrackingBenchmark*"}
           ]}'
           if [ "$BENCHMARK" = "All" ]; then
             MATRIX=$(jq -c . <<< "$ALL")

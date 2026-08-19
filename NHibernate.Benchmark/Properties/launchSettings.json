@@ -15,6 +15,18 @@
     "LatencyBenchmark": {
       "commandName": "Project",
       "commandLineArgs": "-f NHibernate.Benchmark.LatencyBenchmark*"
+    },
+    "EfCoreComparisonInitializationBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-f NHibernate.Benchmark.EfCoreComparison.InitializationBenchmark*"
+    },
+    "EfCoreComparisonProjectionBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-f NHibernate.Benchmark.EfCoreComparison.ProjectionBenchmark*"
+    },
+    "EfCoreComparisonTrackingBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-f NHibernate.Benchmark.EfCoreComparison.TrackingBenchmark*"
     }
   }
 }
