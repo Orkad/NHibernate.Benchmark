@@ -85,7 +85,6 @@ public class ProjectionBenchmark
             seedContext.Database.EnsureCreated();
             Bogus.Randomizer.Seed = new Random(8675309);
             var efFaker = new Bogus.Faker<EfPerson>()
-                .RuleFor(p => p.Id, f => f.IndexFaker)
                 .RuleFor(p => p.FirstName, f => f.Name.FirstName())
                 .RuleFor(p => p.LastName, f => f.Name.LastName())
                 .RuleFor(p => p.Address, f => f.Address.StreetAddress())
