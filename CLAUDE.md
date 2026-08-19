@@ -120,8 +120,10 @@ class puts an NHibernate `[Benchmark]` method and an EF Core `[Benchmark]` metho
 both ORMs directly compared, rather than two separate tables. It exists alongside — not instead
 of — the four classes above, which remain the untouched NHibernate-only reference.
 
-- **`InitializationBenchmark`** — NHibernate `SessionFactory` build cost (ByCode mapping) vs. EF
-  Core's first-use model build cost. `ColdStart`, `launchCount: 30`, matching the root
+- **`InitializationBenchmark`** — NHibernate `SessionFactory` build cost vs. EF Core's first-use
+  model build cost. The NHibernate side uses a Fluent mapping as the `[Benchmark(Baseline = true)]`
+  and keeps a ByCode mapping alongside it for reference, so the table shows both NHibernate
+  mapping styles next to EF Core. `ColdStart`, `launchCount: 30`, matching the root
   `InitializationBenchmark`'s methodology.
 - **`ProjectionBenchmark`** — full entity (tracked/read-only) vs. full-field projection, across
   the same `ElementsCount` values as the root `ProjectionBenchmark`. Each ORM gets its own

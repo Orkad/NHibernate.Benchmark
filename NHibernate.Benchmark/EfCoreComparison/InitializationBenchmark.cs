@@ -1,7 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Jobs;
+using FluentNHibernate.Cfg;
 using NHibernate.Benchmark.AuthorWork.Mappings.ByCode;
+using NHibernate.Benchmark.AuthorWork.Mappings.Fluent;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
@@ -10,10 +12,11 @@ using NHPerson = NHibernate.Benchmark.AuthorWork.Models.Person;
 
 namespace NHibernate.Benchmark.EfCoreComparison;
 
-// Compares session-factory build cost (NHibernate, ByCode mapping) against EF Core's
-// first-use model build cost, both against a fresh SQLite in-memory schema. net10.0-only:
-// EF Core's current packages don't support net48. See ../InitializationBenchmark.cs for the
-// single-ORM comparison across mapping styles this suite doesn't repeat.
+// Compares session-factory build cost (NHibernate, Fluent mapping as the baseline, ByCode
+// kept alongside for reference) against EF Core's first-use model build cost, all against a
+// fresh SQLite in-memory schema. net10.0-only: EF Core's current packages don't support
+// net48. See ../InitializationBenchmark.cs for the single-ORM comparison across mapping
+// styles this suite doesn't repeat.
 [SimpleJob(
     RunStrategy.ColdStart,
     runtimeMoniker: RuntimeMoniker.Net10_0,
@@ -23,8 +26,7 @@ namespace NHibernate.Benchmark.EfCoreComparison;
 [MemoryDiagnoser]
 public class InitializationBenchmark
 {
-    [Benchmark(Baseline = true)]
-    public ISessionFactory NHibernateInitialization()
+    private static Configuration CreateBaseConfiguration()
     {
         var cfg = new Configuration();
         cfg.DataBaseIntegration(db =>
@@ -35,14 +37,35 @@ public class InitializationBenchmark
             db.ConnectionReleaseMode = ConnectionReleaseMode.OnClose;
             db.LogSqlInConsole = false;
         });
-        var mapper = new ModelMapper();
-        mapper.AddMapping<PersonMapping>();
-        cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+        return cfg;
+    }
+
+    private static ISessionFactory UseConfiguration(Configuration cfg)
+    {
         var sessionFactory = cfg.BuildSessionFactory();
         using var session = sessionFactory.OpenSession();
         new SchemaExport(cfg).Create(false, true, session.Connection);
         _ = session.Get<NHPerson>(1);
         return sessionFactory;
+    }
+
+    [Benchmark(Baseline = true)]
+    public ISessionFactory NHibernateFluentInitialization()
+    {
+        var cfg = Fluently.Configure(CreateBaseConfiguration())
+            .Mappings(m => m.FluentMappings.Add<PersonMap>())
+            .BuildConfiguration();
+        return UseConfiguration(cfg);
+    }
+
+    [Benchmark]
+    public ISessionFactory NHibernateByCodeInitialization()
+    {
+        var cfg = CreateBaseConfiguration();
+        var mapper = new ModelMapper();
+        mapper.AddMapping<PersonMapping>();
+        cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+        return UseConfiguration(cfg);
     }
 
     [Benchmark]
