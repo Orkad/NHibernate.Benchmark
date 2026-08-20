@@ -20,4 +20,15 @@
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Benchmark.AuthorWork\NHibernate.Benchmark.AuthorWork.csproj" />
   </ItemGroup>
+
+  <!-- EfCoreComparison/ benchmarks need the net10.0-only AuthorWork.EfCore project, which
+       doesn't support net48, so both the reference and the source files are restricted
+       to the net10.0 leg of this project's own multi-targeting. -->
+  <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
+    <ProjectReference Include="..\NHibernate.Benchmark.AuthorWork.EfCore\NHibernate.Benchmark.AuthorWork.EfCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='net10.0'">
+    <Compile Remove="EfCoreComparison\**\*.cs" />
+  </ItemGroup>
 </Project>
