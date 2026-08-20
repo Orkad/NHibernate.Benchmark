@@ -13,9 +13,13 @@ class run by BenchmarkDotNet, and `NHibernate.Benchmark.AuthorWork/` is a shared
 NHibernate entity models + mappings (Fluent, ByCode, and XML/`.hbm.xml`) used as fixtures across
 the benchmarks.
 
-`readme.md` at the repo root is not a project description — it is the last recorded
-BenchmarkDotNet results table (checked in as a historical reference point), so don't expect
-setup/usage docs there.
+`readme.md` at the repo root is a results index, not a setup/usage guide: it links to a
+per-benchmark-class `.md` report (checked in next to each `[Benchmark]` class, e.g.
+`NHibernate.Benchmark/ProjectionBenchmark.md`) and gives a cross-cutting synthesis of the latest
+recorded run. Each report is a historical snapshot tied to a specific CI run — when benchmark
+code or results change meaningfully, regenerate the affected report(s) from a fresh
+`benchmarks.yml` run and update `readme.md`'s synthesis if the conclusions shifted, rather than
+letting them drift silently out of sync with the code.
 
 ## Solution layout
 
